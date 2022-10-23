@@ -15,16 +15,19 @@ function gammaTimeEpsilon(binaries) {
   let gamma = [];
   let epsilon = [];
   for (let i = 0; i < binaries[0].length; i++) {
+    let moreOne = 0;
     for (let binary of binaries) {
-      let moreOne = 0;
       //if it's a one increment, if not (since it's a 0) decrement
       binary[i] === "1" ? moreOne++ : moreOne--;
-      moreOne ? gamma[i] = 1 : gamma[i] = 0;
-      moreOne ? epsilon[i] = 0 : gamma[i] = 1;
+      console.log("moreOne", moreOne)
     }
+    moreOne > 0 ? gamma[i] = "1" : gamma[i] = "0";
+    console.log("gamma", gamma)
+    moreOne > 0 ? epsilon[i] = "0" : epsilon[i] = "1";
+    console.log("epsilon", epsilon)
+
   }
-  let productInBinary = Number(gamma.join("")) * Number(epsilon.join(""));
-  return binaryToDecimal(productInBinary);
+  return binaryToDecimal(Number(gamma.join(""))) * binaryToDecimal(Number(epsilon.join("")));
 }
 
 /** given a binary number, returns it in decimal */
