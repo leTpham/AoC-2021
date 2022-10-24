@@ -2,69 +2,48 @@
 
 const { readFile, getLinesFromString } = require('../handleInput');
 
-/**
- * You need to use the binary numbers in the diagnostic report to generate two new binary numbers
- * (called the gamma rate and the epsilon rate).
- * The power consumption can then be found by multiplying the gamma rate by the epsilon rate.
- *
- * Each bit in the gamma rate can be determined by finding the most common bit in the corresponding position of all numbers in the diagnostic report.
- * Each bit in the epsilon rate can be determined by finding the least common bit in the corresponding position of all numbers in the diagnostic report.
+/** To find oxygen generator rating, determine the most common value (0 or 1)
+ * in the current bit position, and keep only numbers with that bit in that position.
+ * If 0 and 1 are equally common, keep values with a 1 in the position being considered.
+ * To find CO2 scrubber rating, determine the least common value (0 or 1)
+ * in the current bit position, and keep only numbers with that bit in that position.
+ * If 0 and 1 are equally common, keep values with a 0 in the position being considered
  */
 
-function gammaTimeEpsilon(binaries) {
-  let gamma = [];
-  let epsilon = [];
-  for (let i = 0; i < binaries[0].length; i++) {
-    let moreOne = 0;
-    for (let binary of binaries) {
-      //if it's a one increment, if not (since it's a 0) decrement
-      binary[i] === "1" ? moreOne++ : moreOne--;
-      console.log("moreOne", moreOne);
-    }
-    moreOne > 0 ? gamma[i] = "1" : gamma[i] = "0";
-    console.log("gamma", gamma);
-    moreOne > 0 ? epsilon[i] = "0" : epsilon[i] = "1";
-    console.log("epsilon", epsilon);
-
-  }
-  return binaryToDecimal(Number(gamma.join(""))) * binaryToDecimal(Number(epsilon.join("")));
-}
 
 function oxygenTimeCO2(binaries) {
   //base case: only one number left
-  let oxygen = binaries.slice();
-  // let carbon = binaries.slice();
-  while (oxygen.length > 2) {
-    for (let i = 0; i < 12; i++) {
-      let moreOne = 0;
-      for (let binary of binaries) {
-        //if it's a one increment, if not (since it's a 0) decrement
-        binary[i] === "1" ? moreOne++ : moreOne--;
-        console.log("moreOne", moreOne)
-      }
-      moreOne >= 0
-        ? oxygen = oxygen.filter(binary => binary[i] === "1")
-        : oxygen = oxygen.filter(binary => binary[i] === "0");
-      console.log("oxygen", oxygen)
+  let oxygen = JSON.parse(JSON.stringify(binaries));
+  let carbon = JSON.parse(JSON.stringify(binaries));
+
+  let i = 0;
+  while (oxygen.length > 1) {
+    let moreOne = 0;
+    for (let oxy of oxygen) {
+      //if it's a one increment, if not (since it's a 0) decrement
+      oxy[i] === "1" ? moreOne++ : moreOne--;
     }
+    moreOne >= 0
+      ? oxygen = oxygen.filter(oxy => oxy[i] === "1")
+      : oxygen = oxygen.filter(oxy => oxy[i] === "0");
+    i++;
   }
-  return oxygen;
-  // while (carbon.length > 1) {
-  //   for (let i = 0; i < carbon[0].length; i++) {
-  //     let moreOne = 0;
-  //     for (let binary of binaries) {
-  //       //if it's a one increment, if not (since it's a 0) decrement
-  //       binary[i] === "1" ? moreOne++ : moreOne--;
-  //     }
-  //     moreOne >= 0
-  //       ? carbon = carbon.filter(binary => binary[i] === "0")
-  //       : carbon = carbon.filter(binary => binary[i] === "1");
-  //   }
-  // }
-  // return binaryToDecimal(Number(oxygen[0])) * binaryToDecimal(Number(carbon[0]))
+
+  let j = 0;
+  while (carbon.length > 1) {
+    let moreOne = 0;
+    for (let car of carbon) {
+      //if it's a one increment, if not (since it's a 0) decrement
+      car[j] === "1" ? moreOne++ : moreOne--;
+    }
+    moreOne >= 0
+      ? carbon = carbon.filter(car => car[j] === "0")
+      : carbon = carbon.filter(car => car[j] === "1");
+    j++;
+  }
+  return binaryToDecimal(Number(oxygen.join(""))) * binaryToDecimal(Number(carbon.join("")));
+
 }
-
-
 
 /** given a binary number, returns it in decimal */
 function binaryToDecimal(binary) {
