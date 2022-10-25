@@ -32,40 +32,33 @@ async function winBoard() {
 
   let winNum;
   let remain = 0;
-  for (let j = 0; j < boards.length; j++) {
-    for (let k = 0; k < 5; k++) {
-      // for (let i = 0; i < 5; i++) {
-      //   if (Number(boards[j][k]) === chosenNums[i]) boards[j][k] = '*';
-      // }
-      // for (let l = 5; l < 11; l++) {
-      //   if (Number(boards[j][k]) === chosenNums[l]) boards[j][k] = '*';
-      // }
-      // if (Number(boards[j][k]) === chosenNums[11]) boards[j][k] = '*';
+  for (let i = 0; i < boards.length; i++) {
+    for (let j = 0; j < 5; j++) {
+      for (let k = 0; k < 5; k++) {
+        let up = 0;
+        let start = 0;
+        while (start < chosenNums.length - up) {
+          for (let m = start; m < 5 + up; m++) {
+            if (chosenNums[m] === Number(boards[i][j][k])) {
+              boards[i][j][k] = "*";
+            }
+          }
+          up++;
+          start = start + 5 + up;
+          console.log("UP", up, "START", start)
 
-      // if (boards[j][k].every(el => el === "*")) {
-      //   winNum = chosenNums[11];
-      //   remain = boards
-      //   .filter(el => el !== "*")
-      //   .reduce((prev, curr) => Number(prev) + Number(curr));
-      // }
-      for (let i = 0; i < 5; i++) {
-        //TODO: foreach is not working here so using for loop for now
-        for (let m = 0; m < boards[j][k].length; m++){
-          if (Number(boards[j][k][m])=== chosenNums[i]) {
-            boards[j][k][m] = "*";
           }
         }
+        if (boards[i][j].join("") === "*****") console.log("YAYYY");
+
       }
+
     }
+    console.log("BOARDS AFTER", boards);
+    console.log("result", winNum * remain);
+    return winNum * remain;
 
-    // console.log("product", winNum * remain);
-    // console.log("winnum", winNum);
-    // console.log("remain", remain);
   }
-  console.log("BOARDS AFTER",boards);
-  return winNum * remain;
-
-}
 
 
-winBoard();
+  winBoard();
